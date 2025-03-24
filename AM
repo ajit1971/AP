@@ -846,7 +846,202 @@ menu_main.xml  (go to res right click and select android resource directory and 
 
 12. Intent ( Intent using URL)(Before it add a plane text and button id is text and button inisilize it and under set on click lisner)
 
+Buttun b1 ;
+Edittext e1;
+find the id and methods is setonclick lisner by the button 
+
 String url = e1.getText().toString();
 Intent intent = new Intent(Intent.Action_VIEW,Uri.parse(url));
 startActivity(intent);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11 Menu Item 
+
+
+12.. Manu Main
+
+MainActivity.java
+
+
+
+package com.example.menu_item_bluetooth;
+
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private BluetoothAdapter bluetoothAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    // Inflate Menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    // Handle Menu Clicks Using If-Else
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.submenu_bluetooth) {
+            toggleBluetooth();
+        } else if (itemId == R.id.item_1) {
+            Toast.makeText(this, "Item 1 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_2) {
+            Toast.makeText(this, "Item 2 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_3) {
+            Toast.makeText(this, "Item 3 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_4) {
+            Toast.makeText(this, "Item 4 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_5) {
+            Toast.makeText(this, "Item 5 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.submenu_wifi) {
+            Toast.makeText(this, "Wi-Fi Settings Selected", Toast.LENGTH_SHORT).show();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    // Function to Toggle Bluetooth
+    @SuppressLint("MissingPermission")
+    private void toggleBluetooth() {
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+        } else if (!bluetoothAdapter.isEnabled()) {
+            bluetoothAdapter.enable();
+            Toast.makeText(this, "Bluetooth Enabled", Toast.LENGTH_SHORT).show();
+        } else {
+            bluetoothAdapter.disable();
+            Toast.makeText(this, "Bluetooth Disabled", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
+
+
+
+
+
+menu_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Bluetooth Icon as First Item -->
+    <item
+        android:id="@+id/submenu_bluetooth"
+        android:title="Bluetooth"
+        android:icon="@drawable/blue"
+        app:showAsAction="always"/>
+
+    <!-- Simple Menu Items -->
+    <item android:id="@+id/item_1" android:title="Item 1" app:showAsAction="never"/>
+    <item android:id="@+id/item_2" android:title="Item 2" app:showAsAction="never"/>
+    <item android:id="@+id/item_3" android:title="Item 3" app:showAsAction="never"/>
+    <item android:id="@+id/item_4" android:title="Item 4" app:showAsAction="never"/>
+    <item android:id="@+id/item_5" android:title="Item 5" app:showAsAction="never"/>
+
+    <!-- Submenu for Additional Options -->
+    <item android:id="@+id/menu_settings" android:title="Settings">
+        <menu>
+            <item
+                android:id="@+id/submenu_wifi"
+                android:title="Wi-Fi"
+                android:icon="@android:drawable/ic_menu_info_details"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
+
+</menu>
+
+
+
+Activity_main.xml
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Menu Example"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>
+
+
+
+Androidmenifest.xml
+
+
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.menu_item_bluetooth">
+
+    <!-- Bluetooth Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <application
+        android:allowBackup="true"
+        android:theme="@style/Theme.AppCompat.Light"
+        tools:ignore="ExtraText">
+        
+        <!-- Main Activity with Correct Syntax -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light">
+            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
+
 
