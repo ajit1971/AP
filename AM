@@ -1,0 +1,852 @@
+ 1. Create a Calculator  with functionality
+
+Activity_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <!-- Display Screen -->
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="0"
+        android:textSize="32sp"
+        android:padding="20dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Buttons Layout -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <Button android:text="7" android:id="@+id/btn7" android:layout_weight="1"/>
+            <Button android:text="8" android:id="@+id/btn8" android:layout_weight="1"/>
+            <Button android:text="9" android:id="@+id/btn9" android:layout_weight="1"/>
+            <Button android:text="/" android:id="@+id/btnDivide" android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow>
+            <Button android:text="4" android:id="@+id/btn4" android:layout_weight="1"/>
+            <Button android:text="5" android:id="@+id/btn5" android:layout_weight="1"/>
+            <Button android:text="6" android:id="@+id/btn6" android:layout_weight="1"/>
+            <Button android:text="*" android:id="@+id/btnMultiply" android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow>
+            <Button android:text="1" android:id="@+id/btn1" android:layout_weight="1"/>
+            <Button android:text="2" android:id="@+id/btn2" android:layout_weight="1"/>
+            <Button android:text="3" android:id="@+id/btn3" android:layout_weight="1"/>
+            <Button android:text="-" android:id="@+id/btnSubtract" android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow>
+            <Button android:text="C" android:id="@+id/btnClear" android:layout_weight="1"/>
+            <Button android:text="0" android:id="@+id/btn0" android:layout_weight="1"/>
+            <Button android:text="=" android:id="@+id/btnEqual" android:layout_weight="1"/>
+            <Button android:text="+" android:id="@+id/btnAdd" android:layout_weight="1"/>
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
+
+
+MainActivity.java 
+
+
+package com.example.register_page;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    private TextView tvResult;
+    private String currentInput = "";
+    private String operator = "";
+    private double firstValue = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        tvResult = findViewById(R.id.tvResult);
+
+        // Number Button Click Listeners
+        int[] numberIds = {R.id.btn0, R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6, R.id.btn7, R.id.btn8, R.id.btn9};
+        for (int id : numberIds) {
+            findViewById(id).setOnClickListener(this::onNumberClick);
+        }
+
+        // Operator Button Click Listeners
+        int[] operatorIds = {R.id.btnAdd, R.id.btnSubtract, R.id.btnMultiply, R.id.btnDivide};
+        for (int id : operatorIds) {
+            findViewById(id).setOnClickListener(this::onOperatorClick);
+        }
+
+        // Equal Button
+        findViewById(R.id.btnEqual).setOnClickListener(v -> onEqualClick());
+
+        // Clear Button
+        findViewById(R.id.btnClear).setOnClickListener(v -> onClearClick());
+    }
+
+    private void onNumberClick(View v) {
+        Button button = (Button) v;
+        currentInput += button.getText().toString();
+        tvResult.setText(currentInput);
+    }
+
+    private void onOperatorClick(View v) {
+        if (!currentInput.isEmpty()) {
+            firstValue = Double.parseDouble(currentInput);
+            Button button = (Button) v;
+            operator = button.getText().toString();
+            currentInput = "";
+            tvResult.setText(operator);
+        }
+    }
+
+    private void onEqualClick() {
+        if (!currentInput.isEmpty() && !operator.isEmpty()) {
+            double secondValue = Double.parseDouble(currentInput);
+            double result = 0;
+
+            switch (operator) {
+                case "+": result = firstValue + secondValue; break;
+                case "-": result = firstValue - secondValue; break;
+                case "*": result = firstValue * secondValue; break;
+                case "/":
+                    if (secondValue != 0) result = firstValue / secondValue;
+                    else {
+                        tvResult.setText("Error");
+                        return;
+                    }
+                    break;
+            }
+
+            tvResult.setText(String.valueOf(result));
+            currentInput = String.valueOf(result);
+            operator = "";
+        }
+    }
+
+    private void onClearClick() {
+        currentInput = "";
+        operator = "";
+        firstValue = 0;
+        tvResult.setText("0");
+    }
+
+    }
+
+
+
+3. Create a login screen with Edit-Text fields for username and password and button to submit .Include validation of the empty fields.(validation true properties). 
+
+MainActivity.java 
+
+package com.example.user_ashish;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        TextView username = findViewById(R.id.username);
+        TextView password= findViewById(R.id.password);
+        Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String Username = username.getText().toString();
+                String Password = password.getText().toString();
+                if(Username.isEmpty())
+                {
+                    Toast.makeText(MainActivity.this, "Enter All the fields", Toast.LENGTH_SHORT).show();
+                }
+                else if (Password.isEmpty())
+                {
+                    Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+}
+
+
+
+4. Create a andAPP TO DISPLAY alert dialog on pressing the back button(Yes or No) 
+
+
+MainActivity.java 
+package com.example.myapplication;
+
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+    }
+    public void btnAlertDialog(View view)
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("Message Dialog")
+                .setMessage("Do You want to Exit?")
+                .setPositiveButton("Yes",(dialog, which) ->
+                        Toast.makeText(MainActivity.this,"Yes",Toast.LENGTH_LONG).show())
+                        .setNegativeButton("No",(dialog, which) ->
+                                Toast.makeText(MainActivity.this,"No",Toast.LENGTH_LONG).show())
+                                .show();
+
+    }
+
+}
+(Before Running go to button and method onclick name as btnAlertDialog)
+
+
+5. Create a  andapp to pass the data from one activity to another activity using intent. 
+
+MainActivity.java
+
+package com.example.intent;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+Button btn1 ;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+         btn1 = findViewById(R.id.btn1);
+         btn1.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Intent i = new Intent(MainActivity.this,MainActivity2.class);
+                 startActivity(i);
+             }
+         });
+
+    }
+}
+
+
+(Before run the code go to app right click and new >activicy>empty view activy)
+
+6. Create an app that listens for ACTION_MODE_CHANGE using a Broadcastreceiver. Display Message whenever the airplane mode is turned on or off (40)  
+
+
+MainActivity.java
+
+package com.example.myapplication;
+
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+AirPlaneModeReceiver receiver = new AirPlaneModeReceiver();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        registerReceiver(receiver,filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+}
+
+
+
+AirPlanemodeReceiver.java (class)
+
+package com.example.myapplication;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+
+public class AirPlaneModeReceiver  extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(intent.getAction())) {
+            boolean isEnabled = intent.getBooleanExtra("state", false);
+            Toast.makeText(context, "Airplane Mode: " + (isEnabled ? "ON" : "OFF"), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+}
+
+
+
+
+
+7.Create Broadcast receiver that Android Intent ACTION_BATTERY_CHANGED broadcast and a Toast Display the current battery percentage.
+
+MainActivity.java
+
+
+package com.example.myapplication;
+
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+AirPlaneModeReceiver receiver = new AirPlaneModeReceiver();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        registerReceiver(receiver,filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+}
+
+
+
+
+
+BatteryReceiver.java (Class)
+
+
+package com.example.broadcast_battery_change;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+
+public class BatteryReceiver  extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+     int level= intent.getIntExtra("level",0);
+        Toast.makeText(context, "Battery"+level+"%", Toast.LENGTH_SHORT).show();
+    }
+}
+
+
+
+
+8. Register Page
+username ,email id, password conform password, profile , agree , DOB, submit. gender, country (Spinner {Dropdown{
+
+main_activity.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:background="@drawable/ash"
+            android:padding="5dp" />
+
+        <!-- Username -->
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
+
+        <!-- Email -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email ID"
+            android:inputType="textEmailAddress"
+            android:padding="10dp" />
+
+        <!-- Password -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <!-- Confirm Password -->
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <!-- Date of Birth -->
+        <EditText
+            android:id="@+id/etDOB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date of Birth (DD/MM/YYYY)"
+            android:focusable="false"
+            android:padding="10dp"
+            android:clickable="true" />
+
+        <!-- Gender Selection -->
+        <RadioGroup
+            android:id="@+id/radioGenderGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female" />
+
+            <RadioButton
+                android:id="@+id/rbOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other" />
+        </RadioGroup>
+
+        <!-- Country Dropdown (Spinner) -->
+        <Spinner
+            android:id="@+id/spinnerCountry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp" />
+
+        <!-- Agree Checkbox -->
+        <CheckBox
+            android:id="@+id/checkBoxAgree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I Agree to Terms &amp; Conditions" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+           
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</ScrollView>
+
+
+
+
+
+MainActivity.java
+
+
+
+package com.example.register_page_ashish;
+
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    private ImageView profileImage;
+    private TextView tvUserName;
+    private Button btnEditProfile;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        profileImage = findViewById(R.id.profileImage);
+        tvUserName = findViewById(R.id.tvUserName);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+
+        // Button Click Event
+        btnEditProfile.setOnClickListener(v ->
+                Toast.makeText(MainActivity.this, "Edit Profile Clicked", Toast.LENGTH_SHORT).show()
+        );
+
+    }
+}
+
+
+
+
+
+
+
+
+10. ActivityLifeCycle 
+
+
+
+MainActivity.java
+
+
+package com.example.activitylifecycle;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG="ActivityLifeCycle";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        Toast.makeText(this,"OnStart Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onStart Called");
+    }
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        Toast.makeText(this,"onStart Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onStart Called");
+    }
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+        Toast.makeText(this,"onResume Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onResume Called");
+    }
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+        Toast.makeText(this,"onPause Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onPause Called");
+    }
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+        Toast.makeText(this,"onStop Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onStop Called");
+    }
+    @Override
+    protected void onRestart() {
+
+        super.onRestart();
+        Toast.makeText(this,"onRestart Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onRestart Called");
+    }
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+        Toast.makeText(this,"onDestroy Called",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"onDestroy Called");
+    }
+}
+
+
+
+
+
+
+
+
+
+11. Manu Itmes (Options).
+
+
+activity_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Menu Example"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>
+
+
+
+MainActivity.java
+
+package com.example.menu_item_bluetooth;
+
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private BluetoothAdapter bluetoothAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    // Inflate Menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    // Handle Menu Clicks Using If-Else
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.submenu_bluetooth) {
+            toggleBluetooth();
+        } else if (itemId == R.id.item_1) {
+            Toast.makeText(this, "Item 1 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_2) {
+            Toast.makeText(this, "Item 2 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_3) {
+            Toast.makeText(this, "Item 3 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_4) {
+            Toast.makeText(this, "Item 4 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.item_5) {
+            Toast.makeText(this, "Item 5 Selected", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.submenu_wifi) {
+            Toast.makeText(this, "Wi-Fi Settings Selected", Toast.LENGTH_SHORT).show();
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    // Function to Toggle Bluetooth
+    @SuppressLint("MissingPermission")
+    private void toggleBluetooth() {
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth not supported", Toast.LENGTH_SHORT).show();
+        } else if (!bluetoothAdapter.isEnabled()) {
+            bluetoothAdapter.enable();
+            Toast.makeText(this, "Bluetooth Enabled", Toast.LENGTH_SHORT).show();
+        } else {
+            bluetoothAdapter.disable();
+            Toast.makeText(this, "Bluetooth Disabled", Toast.LENGTH_SHORT).show();
+        }
+    }
+}
+
+
+
+
+AndroidMenifest.xml
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.menu_item_bluetooth">
+
+    <!-- Bluetooth Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <application
+        android:allowBackup="true"
+        android:theme="@style/Theme.AppCompat.Light"
+        tools:ignore="ExtraText">
+
+        <!-- Main Activity with Correct Syntax -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
+
+
+
+
+menu_main.xml  (go to res right click and select android resource directory and type menu)
+
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.menu_item_bluetooth">
+
+    <!-- Bluetooth Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <application
+        android:allowBackup="true"
+        android:theme="@style/Theme.AppCompat.Light"
+        tools:ignore="ExtraText">
+
+        <!-- Main Activity with Correct Syntax -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
+
+
+
+
+
+12. Intent ( Intent using URL)(Before it add a plane text and button id is text and button inisilize it and under set on click lisner)
+
+String url = e1.getText().toString();
+Intent intent = new Intent(Intent.Action_VIEW,Uri.parse(url));
+startActivity(intent);
+
